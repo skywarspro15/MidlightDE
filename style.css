@@ -18,6 +18,10 @@ body {
   background: url("https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80");
   background-repeat: no-repeat;
   background-size: cover;
+  overflow: hidden;
+  font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica,
+    Arial, sans-serif;
 }
 
 img {
@@ -78,7 +82,7 @@ a {
 
 .taskbar {
   width: auto;
-  height: 45px;
+  height: 40px;
   bottom: 0;
   background: rgba(29, 29, 29, 0.5);
   backdrop-filter: blur(50px) saturate(50%);
@@ -86,9 +90,8 @@ a {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 8px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
   border-radius: 5px;
 }
 
@@ -96,9 +99,30 @@ a {
   display: inline-block;
 }
 
-.taskbar .tb-icon {
+.taskbar .apps {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.taskbar .apps .tb-icon {
   width: 25px;
   height: 25px;
+}
+
+.taskbar .timeDate {
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+}
+
+.taskbar .timeDate * {
+  margin: 0;
+  padding: 0;
+  text-align: right;
+  color: rgb(255, 255, 255);
 }
 
 @media (prefers-reduced-motion: no-preference) {
