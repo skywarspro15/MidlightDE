@@ -1,0 +1,5 @@
+{
+  "name": "Terminal",
+  "script": "index.js",
+  "content": "content.html"
+}

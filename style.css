@@ -1,3 +1,13 @@
+@font-face {
+  font-family: IconFont;
+  src: url(assets/SFI.ttf);
+}
+
+:root {
+  --window-unfocused: rgb(24, 24, 24);
+  --window-focused: rgba(29, 29, 29, 0.9);
+}
+
 *,
 *::before,
 *::after {
@@ -125,6 +135,92 @@ a {
   color: rgb(255, 255, 255);
 }
 
+.window-frame {
+  width: 8.18in;
+  height: 6.33in;
+  background-color: var(--window-unfocused);
+  position: absolute;
+  border-radius: 6px;
+  animation: enterIn 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  user-select: none;
+  transition-property: background-color, box-shadow;
+  transition-timing-function: ease-out;
+  transition-duration: 100ms;
+  border: 0.5px solid rgba(128, 128, 128, 0.2);
+  color: rgb(255, 255, 255);
+}
+
+.window-frame.focused {
+  background-color: var(--window-focused);
+  backdrop-filter: blur(50px);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 1);
+}
+
+.window-frame .window-drag {
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  color: rgb(128, 128, 128);
+  font-size: 12px;
+  width: 100%;
+  height: 0.4in;
+}
+
+.window-frame .window-controls {
+  top: 0;
+  right: 0;
+  position: absolute;
+  display: flex;
+
+  justify-content: flex-end;
+  height: 0.7in;
+  margin-left: auto;
+}
+
+.window-frame .window-controls .controls {
+  background-color: rgba(255, 255, 255, 0);
+  top: 0;
+  color: #fff;
+  opacity: 0.5;
+  border: 0;
+  width: 0.35in;
+  height: 0.3in;
+  font-size: 9px;
+  font-family: iconfont;
+}
+
+.window-frame .window-controls .controls:hover {
+  cursor: default;
+}
+
+.window-frame .window-contents .window-header {
+  height: 0.5in;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.window-frame .window-contents {
+  height: calc(100% - 0.4in);
+}
+
+.terminal-embedded {
+  overflow-y: scroll;
+  width: 100%;
+  height: 100%;
+}
+
+.terminal-embedded p {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  top: 0;
+  left: 0;
+  outline: none;
+  font-size: 18px;
+  font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
@@ -132,16 +228,55 @@ a {
   .taskbar-container {
     animation: tbEnter 0.5s ease-in-out;
   }
-}
+  @keyframes tbEnter {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
 
-@keyframes tbEnter {
-  from {
-    opacity: 0;
-    transform: translateY(50px);
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  @keyframes enterIn {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes exitOut {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
   }
 }
