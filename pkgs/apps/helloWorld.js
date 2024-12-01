@@ -6,7 +6,7 @@ export default {
   type: "process",
   window: {
     width: 800,
-    height: 360,
+    height: 460,
     preventResize: true,
   },
   exec: async function (Root, wrapper) {
@@ -40,6 +40,12 @@ export default {
       .appendTo(wrapper)
       .on("click", (e) => {
         Root.Lib.launch("apps:welcome");
+      });
+    new Root.Lib.html("button")
+      .text("Grab console")
+      .appendTo(wrapper)
+      .on("click", (e) => {
+        alert(Root.Lib.grabConsole());
       });
     new Root.Lib.html("button")
       .text("Exit app")

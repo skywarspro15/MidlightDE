@@ -320,6 +320,13 @@ class Html {
   }
 }
 
+console.stdlog = console.log.bind(console);
+console.logs = [];
+console.log = function () {
+  console.logs.push(Array.from(arguments));
+  console.stdlog.apply(console, arguments);
+};
+
 let isDragging = false;
 let currentlyDragging;
 let prevWindow;
@@ -751,6 +758,9 @@ async function loadPackage(path) {
   let rootFunctions = {
     Lib: {
       html: Html,
+      grabConsole: () => {
+        return console.logs;
+      },
       launch: (path) => {
         loadPackage(path);
       },
