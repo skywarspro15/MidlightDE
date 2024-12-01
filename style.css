@@ -26,8 +26,10 @@ html {
 
 body {
   background: url("assets/wallpaper.jpg");
-  background-repeat: no-repeat;
   background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center;
   object-fit: cover;
   overflow: hidden;
   font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen,
