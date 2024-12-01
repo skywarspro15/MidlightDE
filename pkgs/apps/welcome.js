@@ -30,5 +30,8 @@ export default {
       .on("click", (e) => {
         Root.Lib.onEnd();
       });
+    return Root.Lib.setupReturns((m) => {
+      console.log("Welcome received message: " + m);
+    });
   },
 };

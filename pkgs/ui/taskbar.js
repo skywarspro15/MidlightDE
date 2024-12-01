@@ -64,5 +64,8 @@ export default {
       time.innerText = formatTime(new Date());
       date.innerText = formatDate(new Date());
     }, 1000);
+    return Root.Lib.setupReturns((m) => {
+      console.log("Taskbar received message: " + m);
+    });
   },
 };

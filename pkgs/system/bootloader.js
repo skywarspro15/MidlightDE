@@ -11,5 +11,8 @@ export default {
     setTimeout(() => {
       Root.Lib.launch("apps:helloWorld");
     }, 500);
+    return Root.Lib.setupReturns((m) => {
+      console.log("Bootloader received message: " + m);
+    });
   },
 };

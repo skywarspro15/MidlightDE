@@ -47,5 +47,8 @@ export default {
       .on("click", (e) => {
         Root.Lib.onEnd();
       });
+    return Root.Lib.setupReturns((m) => {
+      console.log("Example received message: " + m);
+    });
   },
 };
