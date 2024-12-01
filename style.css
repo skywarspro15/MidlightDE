@@ -1,6 +1,6 @@
 @font-face {
   font-family: IconFont;
-  src: url(assets/SFI.ttf);
+  src: url("assets/SFI.ttf");
 }
 
 :root {
@@ -25,9 +25,10 @@ html {
 }
 
 body {
-  background: url("https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80");
+  background: url("assets/wallpaper.jpg");
   background-repeat: no-repeat;
   background-size: cover;
+  object-fit: cover;
   overflow: hidden;
   font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica,
@@ -64,6 +65,7 @@ summary,
 [type="submit"],
 [type="checkbox"] {
   cursor: pointer;
+  font-family: inherit;
 }
 
 a {
@@ -91,7 +93,7 @@ a {
 }
 
 .taskbar {
-  width: auto;
+  width: 90%;
   height: 40px;
   bottom: 0;
   background: rgba(29, 29, 29, 0.5);
@@ -105,6 +107,20 @@ a {
   border-radius: 5px;
 }
 
+.taskbar-tooltip {
+  position: absolute;
+  /* left: 0; */
+  bottom: 60px;
+  color: white;
+  background: rgba(29, 29, 29, 0.5);
+  backdrop-filter: blur(50px) saturate(50%);
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+}
+
 .taskbar * {
   display: inline-block;
 }
@@ -112,14 +128,15 @@ a {
 .taskbar .apps {
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  overflow-x: auto;
   gap: 8px;
+  flex-grow: 1;
 }
 
 .taskbar .apps .tb-icon {
   width: 25px;
   height: 25px;
+  padding: 2px;
 }
 
 .taskbar .timeDate {
@@ -201,6 +218,7 @@ a {
 
 .window-frame .window-contents {
   height: calc(100% - 0.4in);
+  overflow: auto;
 }
 
 .terminal-embedded {
@@ -219,6 +237,101 @@ a {
   outline: none;
   font-size: 18px;
   font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+button {
+  border: 1px solid rgba(80, 80, 80, 0.7);
+  background-color: rgba(50, 50, 50, 0.7);
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  transition: background-color 0.1s ease-out;
+}
+
+button:hover {
+  border: 1px solid rgba(80, 80, 80, 0.7);
+  background-color: rgba(70, 70, 70, 0.7);
+}
+
+button:active {
+  border: 1px solid rgba(80, 80, 80, 0.7);
+  background-color: rgba(80, 80, 80, 0.7);
+}
+
+.resize-handle {
+  position: absolute;
+  background: transparent; /* Or a color/image if you want visible handles */
+  z-index: 100; /* Ensure handles are on top */
+}
+
+.resize-nw {
+  top: 0;
+  left: 0;
+  cursor: nw-resize;
+  width: 10px;
+  height: 10px;
+}
+
+.resize-ne {
+  top: 0;
+  right: 0;
+  cursor: ne-resize;
+  width: 10px;
+  height: 10px;
+}
+
+.resize-sw {
+  bottom: 0;
+  left: 0;
+  cursor: sw-resize;
+  width: 10px;
+  height: 10px;
+}
+
+.resize-se {
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+  width: 10px;
+  height: 10px;
+}
+
+/* ... previous resize handle styles ... */
+
+.resize-n {
+  top: 0;
+  left: 50%; /* Centered horizontally */
+  transform: translateX(-50%); /* Adjust for centering */
+  cursor: n-resize;
+  width: 100%; /* Full width */
+  height: 10px;
+}
+
+.resize-e {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  cursor: e-resize;
+  width: 10px;
+  height: calc(100% - 10px); /* Account for corner handles */
+}
+
+.resize-s {
+  bottom: 0;
+  left: 50%; /* Centered horizontally */
+  transform: translateX(-50%); /* Adjust for centering */
+  cursor: s-resize;
+  width: 100%; /* Full width */
+  height: 10px;
+}
+
+.resize-w {
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  cursor: w-resize;
+  width: 10px;
+  height: calc(100% - 10px); /* Account for corner handles */
 }
 
 @media (prefers-reduced-motion: no-preference) {

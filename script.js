@@ -1,49 +1,4 @@
-let time = document.querySelector(".time");
-let date = document.querySelector(".date");
-
-function formatTime(date) {
-  var hours = date.getHours();
-  var minutes = date.getMinutes();
-  var ampm = hours >= 12 ? "PM" : "AM";
-  hours = hours % 12;
-  hours = hours ? hours : 12;
-  minutes = minutes < 10 ? "0" + minutes : minutes;
-  var strTime = hours + ":" + minutes + " " + ampm;
-
-  return strTime;
-}
-
-function formatDate(date) {
-  var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  var months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  var day = date.getDate();
-
-  var strDate =
-    daysOfWeek[date.getDay()] + ", " + months[date.getMonth()] + " " + day;
-  return strDate;
-}
-
-time.innerText = formatTime(new Date());
-date.innerText = formatDate(new Date());
-
-setInterval(() => {
-  time.innerText = formatTime(new Date());
-  date.innerText = formatDate(new Date());
-}, 1000);
+import Html from "/libs/html.js";
 
 let isDragging = false;
 let currentlyDragging;
@@ -82,27 +37,40 @@ function closeWindow(winId) {
   }, 498);
 }
 
-function maximizeWindow(winId) {
+function maximizeWindow(
+  winId,
+  noTransition = false,
+  overrideLeft = null,
+  overrideTop = null
+) {
   let windowElement = document.getElementById(winId);
   console.log(maximizedApps);
   if (winId in maximizedApps) {
     beforeMaximized = maximizedApps[winId];
-    windowElement.style.transitionDuration = "200ms";
-    windowElement.style.transitionTimingFunction =
-      "cubic-bezier(0.86,0,0.07,1)";
-    windowElement.style.transitionProperty =
-      "background-color, box-shadow, width, height, left, top";
+    if (!noTransition) {
+      windowElement.style.transitionDuration = "200ms";
+      windowElement.style.transitionTimingFunction =
+        "cubic-bezier(0.86,0,0.07,1)";
+      windowElement.style.transitionProperty =
+        "background-color, box-shadow, width, height, left, top, border-radius";
+    } else {
+      windowElement.style.transition = "none";
+    }
     windowElement.style.width = beforeMaximized.width;
     windowElement.style.height = beforeMaximized.height;
-    windowElement.style.left = beforeMaximized.left;
-    windowElement.style.top = beforeMaximized.top;
+    windowElement.style.left = overrideLeft
+      ? overrideLeft
+      : beforeMaximized.left;
+    windowElement.style.top = overrideTop ? overrideTop : beforeMaximized.top;
+    windowElement.style.borderRadius = beforeMaximized.borderRadius;
     delete maximizedApps[winId];
-    setTimeout(() => {
-      windowElement.style.transitionDuration = "100ms";
-      windowElement.style.transitionTimingFunction = "ease-out";
-      windowElement.style.transitionProperty =
-        "background-color, box-shadow, width, height";
-    }, 200);
+    if (!noTransition) {
+      setTimeout(() => {
+        windowElement.style.transitionDuration = "100ms";
+        windowElement.style.transitionTimingFunction = "ease-out";
+        windowElement.style.transitionProperty = "background-color, box-shadow";
+      }, 200);
+    }
     return;
   }
   beforeMaximized = {
@@ -110,66 +78,29 @@ function maximizeWindow(winId) {
     height: windowElement.style.height,
     left: windowElement.style.left,
     top: windowElement.style.top,
+    borderRadius: windowElement.style.borderRadius,
   };
   maximizedApps[winId] = beforeMaximized;
-  windowElement.style.transitionDuration = "200ms";
-  windowElement.style.transitionTimingFunction = "cubic-bezier(0.19,1,0.22,1)";
-  windowElement.style.transitionProperty =
-    "background-color, box-shadow, width, height, left, top";
-  windowElement.style.width = "100%";
-  windowElement.style.height = "100%";
-  windowElement.style.left = 0;
-  windowElement.style.top = 0;
-  setTimeout(() => {
-    windowElement.style.transitionDuration = "100ms";
-    windowElement.style.transitionProperty =
-      "background-color, box-shadow, width, height";
-  }, 100);
-}
-
-function maximizeWindow(winId) {
-  let windowElement = document.getElementById(winId);
-  console.log(maximizedApps);
-  if (winId in maximizedApps) {
-    beforeMaximized = maximizedApps[winId];
+  if (!noTransition) {
     windowElement.style.transitionDuration = "200ms";
     windowElement.style.transitionTimingFunction =
       "cubic-bezier(0.19,1,0.22,1)";
     windowElement.style.transitionProperty =
-      "background-color, box-shadow, width, height, left, top";
-    windowElement.style.width = beforeMaximized.width;
-    windowElement.style.height = beforeMaximized.height;
-    windowElement.style.left = beforeMaximized.left;
-    windowElement.style.top = beforeMaximized.top;
-    delete maximizedApps[winId];
-    setTimeout(() => {
-      windowElement.style.transitionDuration = "100ms";
-      windowElement.style.transitionTimingFunction = "ease-out";
-      windowElement.style.transitionProperty =
-        "background-color, box-shadow, width, height";
-    }, 200);
-    return;
+      "background-color, box-shadow, width, height, left, top, border-radius";
+  } else {
+    windowElement.style.transition = "none";
   }
-  beforeMaximized = {
-    width: windowElement.style.width,
-    height: windowElement.style.height,
-    left: windowElement.style.left,
-    top: windowElement.style.top,
-  };
-  maximizedApps[winId] = beforeMaximized;
-  windowElement.style.transitionDuration = "200ms";
-  windowElement.style.transitionTimingFunction = "cubic-bezier(0.19,1,0.22,1)";
-  windowElement.style.transitionProperty =
-    "background-color, box-shadow, width, height, left, top";
   windowElement.style.width = "100%";
-  windowElement.style.height = "100%";
+  windowElement.style.height = "calc(100% - 60px)";
   windowElement.style.left = 0;
   windowElement.style.top = 0;
-  setTimeout(() => {
-    windowElement.style.transitionDuration = "100ms";
-    windowElement.style.transitionProperty =
-      "background-color, box-shadow, width, height";
-  }, 100);
+  windowElement.style.borderRadius = 0;
+  if (!noTransition) {
+    setTimeout(() => {
+      windowElement.style.transitionDuration = "100ms";
+      windowElement.style.transitionProperty = "background-color, box-shadow";
+    }, 100);
+  }
 }
 
 function enableDrag(winId) {
@@ -222,7 +153,12 @@ function enableDrag(winId) {
   function elementDrag(e) {
     e = e || window.event;
     if (winId in maximizedApps) {
-      maximizeWindow(winId);
+      maximizeWindow(
+        winId,
+        true,
+        elmnt.offsetLeft - pos1 + "px",
+        elmnt.offsetTop - pos2 + "px"
+      );
     }
     e.preventDefault();
     isDragging = true;
@@ -240,7 +176,91 @@ function enableDrag(winId) {
   }
 }
 
-function createWindow(winData) {
+function enableResize(winId) {
+  let elmnt = document.getElementById(winId);
+
+  // Create resize handles
+  const resizeHandles = ["nw", "n", "ne", "e", "se", "s", "sw", "w"];
+  resizeHandles.forEach((handle) => {
+    const resizeHandle = document.createElement("div");
+    resizeHandle.classList.add("resize-handle", `resize-${handle}`);
+    elmnt.appendChild(resizeHandle);
+
+    let isResizing = false;
+    let startX, startY, startWidth, startHeight;
+
+    resizeHandle.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      isResizing = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      startWidth = elmnt.offsetWidth;
+      startHeight = elmnt.offsetHeight;
+
+      window.addEventListener("mousemove", resize);
+      window.addEventListener("mouseup", () => {
+        isResizing = false;
+        window.removeEventListener("mousemove", resize);
+      });
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+
+      let newWidth, newHeight, newLeft, newTop;
+
+      switch (handle) {
+        case "nw":
+          newWidth = startWidth - (e.clientX - startX);
+          newHeight = startHeight - (e.clientY - startY);
+          newLeft = e.clientX;
+          newTop = e.clientY;
+          break;
+
+        case "n":
+          newHeight = startHeight - (e.clientY - startY);
+          newTop = e.clientY;
+          break; //Only adjusts height & top
+        case "ne":
+          newWidth = startWidth + (e.clientX - startX);
+          newHeight = startHeight - (e.clientY - startY);
+          newTop = e.clientY;
+          break;
+        case "e":
+          newWidth = startWidth + (e.clientX - startX);
+          break; // Only adjusts width
+        case "se":
+          newWidth = startWidth + (e.clientX - startX);
+          newHeight = startHeight + (e.clientY - startY);
+          break;
+        case "s":
+          newHeight = startHeight + (e.clientY - startY);
+          break; // Only adjusts height
+        case "sw":
+          newWidth = startWidth - (e.clientX - startX);
+          newHeight = startHeight + (e.clientY - startY);
+          newLeft = e.clientX;
+          break;
+
+        case "w":
+          newWidth = startWidth - (e.clientX - startX);
+          newLeft = e.clientX;
+          break; // Only adjusts width & left
+      }
+
+      newWidth = Math.max(200, newWidth);
+      newHeight = Math.max(150, newHeight);
+
+      elmnt.style.width = newWidth + "px";
+      elmnt.style.height = newHeight + "px";
+
+      if (newLeft !== undefined) elmnt.style.left = newLeft + "px";
+      if (newTop !== undefined) elmnt.style.top = newTop + "px";
+    }
+  });
+}
+
+function createWindow(winData, onClose) {
   const winID = winData.id;
   const winTitle = winData.title;
   const winContent = winData.content;
@@ -252,7 +272,20 @@ function createWindow(winData) {
   const windowDrag = document.createElement("div");
   windowDrag.classList.add("window-drag");
   windowDrag.textContent = winTitle;
+  windowDrag.addEventListener("dblclick", () => {
+    if (winData.preventResize && winData.preventResize == true) {
+      return;
+    }
+    maximizeWindow(winID);
+  });
   windowFrame.appendChild(windowDrag);
+
+  if (winData.width) {
+    windowFrame.style.width = winData.width + "px";
+  }
+  if (winData.height) {
+    windowFrame.style.height = winData.height + "px";
+  }
 
   // Create the window controls
   const windowControls = document.createElement("div");
@@ -268,12 +301,19 @@ function createWindow(winData) {
       });
     }
     if (index == 1) {
+      if (winData.preventResize && winData.preventResize == true) {
+        button.disabled = true;
+      }
       button.addEventListener("click", () => {
+        if (winData.preventResize && winData.preventResize == true) {
+          return;
+        }
         maximizeWindow(winID);
       });
     }
     if (index == 2) {
       button.addEventListener("click", () => {
+        onClose();
         closeWindow(winID);
       });
     }
@@ -286,9 +326,44 @@ function createWindow(winData) {
   windowContents.classList.add("window-contents");
   windowContents.innerHTML = winContent;
   windowFrame.appendChild(windowContents);
-
   document.body.appendChild(windowFrame);
+  let x = window.innerWidth / 2;
+  let y = window.innerHeight / 2;
+
+  windowFrame.style.left = x;
+  windowFrame.style.top = y;
   enableDrag(winID);
+  let resizeEnabled = true;
+  if (winData.preventResize && winData.preventResize == true) {
+    resizeEnabled = false;
+  }
+  if (resizeEnabled) {
+    enableResize(winID);
+  }
+  let taskbar = document.querySelector(".taskbar-container");
+  if (prevWindow) {
+    prevWindow.classList.remove("focused");
+  }
+  windowFrame.classList.add("focused");
+  windowFrame.style.zIndex = curZIndex++;
+  taskbar.style.zIndex = curZIndex + 1;
+  prevWindow = windowFrame;
+  return {
+    wrapper: new Html(windowContents),
+    close: () => {
+      onClose();
+      closeWindow(winID);
+    },
+    focus: () => {
+      if (prevWindow) {
+        prevWindow.classList.remove("focused");
+      }
+      windowFrame.classList.add("focused");
+      windowFrame.style.zIndex = curZIndex++;
+      taskbar.style.zIndex = curZIndex + 1;
+      prevWindow = windowFrame;
+    },
+  };
 }
 
 function makeID(length) {
@@ -334,37 +409,130 @@ function scriptLoaded(url) {
   return false;
 }
 
-async function loadPackage(path) {
-  document.body.style.cursor = "wait";
-  let rawData = await getData(path + "/app.json");
-  let package = jsonParse(rawData);
+let apps = [];
 
-  let script = path + "/" + package.script;
-  let scriptExists = document.querySelector("." + package.name + "-script");
-
-  if (!scriptExists) {
-    let scriptElement = document.createElement("script");
-    scriptElement.src = script;
-    scriptElement.className = package.name + "-script";
-    document.body.appendChild(scriptElement);
-  }
-
-  let winContent = await getData(path + "/" + package.content);
-
-  createWindow({
-    id: JSON.stringify({ name: package.name, id: makeID(5) }),
-    title: package.name,
-    content: winContent,
-  });
-
-  if (package.name in windowInstances) {
-    windowInstances[package.name] = windowInstances[package.name] + 1;
-  } else {
-    windowInstances[package.name] = 1;
-  }
-
-  document.body.style.cursor = "default";
+function addToTaskbar(src, alt) {
+  let taskbar = Html.qs(".apps");
+  let tooltip;
+  let hoverMove;
+  let element = new Html("img")
+    .classOn("tb-icon")
+    .attr({ src: src, alt: alt, draggable: false })
+    .styleJs({ userSelect: "none" })
+    .appendTo(taskbar)
+    .on("mouseover", (e) => {
+      tooltip = new Html("div")
+        .classOn("taskbar-tooltip")
+        .text(alt)
+        .appendTo("body")
+        .styleJs({ left: e.clientX - 20 + "px", zIndex: 1000 });
+      document.addEventListener("mousemove", (e) => {
+        tooltip.styleJs({ left: e.clientX - 20 + "px", zIndex: 1000 });
+      });
+    })
+    .on("mouseout", () => {
+      if (tooltip) {
+        tooltip.cleanup();
+      }
+      if (hoverMove) {
+        document.removeEventListener("mousemove", hoverInt);
+      }
+    });
+  return element;
 }
 
-loadPackage("applications/terminal");
-loadPackage("applications/terminal");
+async function loadPackage(path) {
+  let window;
+  let taskbarIcon;
+  let id = makeID(5);
+  let closeCallback;
+  let pid = apps.length + 1;
+  let rootFunctions = {
+    Lib: {
+      html: Html,
+      launch: (path) => {
+        loadPackage(path);
+      },
+      setOnEnd: (callback) => {
+        closeCallback = callback;
+      },
+      onEnd: () => {
+        window.close();
+      },
+    },
+    Modal: {
+      alert: (message) => {
+        alert(message);
+      },
+    },
+    PID: pid,
+    Token: id,
+  };
+
+  let splitted = path.split(":");
+  let constructedPath = splitted[0] + "/" + splitted[1];
+  let pkg = await import(`/pkgs/${constructedPath}.js`);
+  pkg = pkg.default;
+
+  console.log(`[PACKAGES] Loaded package ${pkg.name}`);
+  console.log(`[PACKAGES] Package description: ${pkg.description}`);
+  console.log(`[PACKAGES] Package version: ${pkg.ver}`);
+  console.log(`[PACKAGES] Package type: ${pkg.type}`);
+
+  let appInfo = {
+    name: pkg.name,
+    description: pkg.description,
+    version: pkg.ver,
+    type: pkg.type,
+    pid: pid,
+    token: id,
+  };
+
+  let windowArguments = {
+    id: JSON.stringify({ name: pkg.name, id }),
+    title: pkg.name,
+    content: "",
+  };
+
+  if (pkg.window && pkg.window.width) {
+    windowArguments["width"] = pkg.window.width;
+    console.log(`[PACKAGES] Window width: ${pkg.window.width}`);
+  }
+
+  if (pkg.window && pkg.window.height) {
+    windowArguments["height"] = pkg.window.height;
+    console.log(`[PACKAGES] Window height: ${pkg.window.height}`);
+  }
+
+  if (pkg.window && pkg.window.preventResize) {
+    windowArguments["preventResize"] = pkg.window.preventResize;
+    console.log(`[PACKAGES] Prevent resize: ${pkg.window.preventResize}`);
+  }
+  if (pkg.type == "process") {
+    window = createWindow(windowArguments, () => {
+      console.log(pid);
+      if (closeCallback) closeCallback();
+      taskbarIcon.cleanup();
+      const index = apps.indexOf(appInfo);
+      if (index > -1) {
+        apps.splice(index, 1);
+        console.log(apps);
+      }
+    });
+
+    taskbarIcon = addToTaskbar(pkg.icon, pkg.name);
+    taskbarIcon.on("click", () => {
+      window.focus();
+    });
+
+    let wrapper = window.wrapper;
+    pkg.exec(rootFunctions, wrapper);
+  }
+  if (pkg.type == "ui") {
+    pkg.exec(rootFunctions, Html.qs("body"));
+  }
+  apps.push(appInfo);
+  console.log(apps);
+}
+
+loadPackage("system:bootloader");
