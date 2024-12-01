@@ -390,25 +390,6 @@ function jsonParse(jsonString) {
   return false;
 }
 
-async function getData(path) {
-  let respText = "";
-  await fetch(path)
-    .then((response) => response.text())
-    .then((data) => {
-      respText = data;
-    });
-  return respText;
-}
-
-function scriptLoaded(url) {
-  if (!url) return false;
-  var scripts = document.getElementsByTagName("script");
-  for (var i = scripts.length; i--; ) {
-    if (scripts[i].src == url) return true;
-  }
-  return false;
-}
-
 let apps = [];
 
 function addToTaskbar(src, alt) {
