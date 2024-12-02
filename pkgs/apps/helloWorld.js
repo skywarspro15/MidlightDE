@@ -63,15 +63,15 @@ export default {
       .text("See console")
       .appendTo(wrapper)
       .on("click", (e) => {
-        let updateInterval;
+        let updateFunc;
         let TWindow = new Win({
           icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1zcXVhcmUtdGVybWluYWwiPjxwYXRoIGQ9Im03IDExIDItMi0yLTIiLz48cGF0aCBkPSJNMTEgMTNoNCIvPjxyZWN0IHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgeD0iMyIgeT0iMyIgcng9IjIiIHJ5PSIyIi8+PC9zdmc+",
           title: "Console",
           pid: Root.PID,
-          width: 500,
-          height: 415,
+          width: 600,
+          height: 515,
           onclose: () => {
-            clearInterval(updateInterval);
+            document.removeEventListener("midlight-console-update", updateFunc);
             TWindow.close();
           },
         });
@@ -81,7 +81,11 @@ export default {
         let arr = Root.Lib.grabConsole();
         for (const textParts of arr) {
           new Html("pre")
-            .text(textParts[0])
+            .text(
+              typeof textParts[0] === "object"
+                ? JSON.stringify(textParts[0], null, 2)
+                : textParts[0]
+            )
             .styleJs({
               wordWrap: "break-word",
               fontSize: "10px",
@@ -91,22 +95,24 @@ export default {
             .appendTo(wrapper);
           wrapper.elm.scrollTop = wrapper.elm.scrollHeight;
         }
-        updateInterval = setInterval(() => {
-          wrapper.clear();
-          arr = arr.reverse();
-          for (const textParts of arr) {
-            new Html("pre")
-              .text(textParts[0])
-              .styleJs({
-                wordWrap: "break-word",
-                fontSize: "10px",
-                maxWidth: "100%",
-                width: "100%",
-              })
-              .appendTo(wrapper);
-            wrapper.elm.scrollTop = wrapper.elm.scrollHeight;
-          }
-        }, 1000);
+        updateFunc = (e) => {
+          let textParts = e.detail;
+          new Html("pre")
+            .text(
+              typeof textParts[0] === "object"
+                ? JSON.stringify(textParts[0], null, 2)
+                : textParts[0]
+            )
+            .styleJs({
+              wordWrap: "break-word",
+              fontSize: "10px",
+              maxWidth: "100%",
+              width: "100%",
+            })
+            .appendTo(wrapper);
+          wrapper.elm.scrollTop = wrapper.elm.scrollHeight;
+        };
+        document.addEventListener("midlight-console-update", updateFunc);
       });
     new Root.Lib.html("button")
       .text("Exit app")
