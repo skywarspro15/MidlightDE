@@ -2,11 +2,9 @@ export default {
   name: "Bootloader",
   description: "Midlight's bootloader.",
   ver: "v0.0.1",
-  type: "ui",
-  exec: async function (Root, wrapper) {
-    Root.Lib.setOnEnd((_) =>
-      console.log("how do you even kill the boodloader")
-    );
+  type: "process",
+  exec: async function (Root, Core) {
+    Root.Lib.setOnEnd((_) => console.log("[BOOTLOADER] Finished booting"));
     let bootScreen = new Html("div")
       .styleJs({
         backgroundColor: "black",
@@ -15,7 +13,7 @@ export default {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        position: "absolute",
+        position: "fixed",
         top: 0,
         left: 0,
         width: "100%",
@@ -30,11 +28,13 @@ export default {
         new Html("br"),
         new Html("h2").text("Please wait...")
       )
-      .appendTo(wrapper);
+      .appendTo("body");
     await Root.Lib.launch("ui:taskbar");
+    await Root.Lib.launch("system:contextmenu");
     bootScreen.cleanup();
     setTimeout(() => {
       Root.Lib.launch("apps:helloWorld");
+      Root.Lib.onEnd();
     }, 500);
     return Root.Lib.setupReturns((m) => {
       console.log("Bootloader received message: " + m);

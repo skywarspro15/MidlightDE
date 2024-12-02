@@ -2,11 +2,17 @@ export default {
   name: "Taskbar",
   description: "Midlight's taskbar.",
   ver: "v0.0.1",
-  type: "ui",
-  exec: async function (Root, wrapper) {
-    Root.Lib.setOnEnd((_) =>
-      console.log("did someone kill the fucking taskbar?????")
-    );
+  type: "process",
+  exec: async function (Root, Core) {
+    let wrapper;
+    Root.Lib.setOnEnd((_) => console.log("[TASKBAR] Taskbar killed"));
+    wrapper = new Root.Lib.html("div").appendTo("body").styleJs({
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+    });
     let Html = Root.Lib.html;
     let tbContainer = new Html("div")
       .classOn("taskbar-container")

@@ -10,7 +10,10 @@ export default {
   },
   exec: async function (Root) {
     let MyWindow;
+
     const Win = (await Root.Lib.loadLibrary("WindowSystem")).win;
+    const CtxMenu = await Root.Lib.loadLibrary("ContextMenu");
+
     MyWindow = new Win({
       icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1hcHAtd2luZG93Ij48cmVjdCB4PSIyIiB5PSI0IiB3aWR0aD0iMjAiIGhlaWdodD0iMTYiIHJ4PSIyIi8+PHBhdGggZD0iTTEwIDR2NCIvPjxwYXRoIGQ9Ik0yIDhoMjAiLz48cGF0aCBkPSJNNiA0djQiLz48L3N2Zz4=",
       title: "Debug",
@@ -64,6 +67,20 @@ export default {
       .appendTo(wrapper)
       .on("click", (e) => {
         let updateFunc;
+        let ctxMenuFunc;
+        let wrapper;
+        ctxMenuFunc = (e) => {
+          let contextId = e.detail;
+          if (contextId === "console-text-" + Root.Token) {
+            CtxMenu.addToMenu({
+              "Clear console": () => {
+                wrapper.clear();
+                console.log("[CONSOLE] Console cleared");
+                return;
+              },
+            });
+          }
+        };
         let TWindow = new Win({
           icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1zcXVhcmUtdGVybWluYWwiPjxwYXRoIGQ9Im03IDExIDItMi0yLTIiLz48cGF0aCBkPSJNMTEgMTNoNCIvPjxyZWN0IHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgeD0iMyIgeT0iMyIgcng9IjIiIHJ5PSIyIi8+PC9zdmc+",
           title: "Console",
@@ -71,16 +88,19 @@ export default {
           width: 600,
           height: 515,
           onclose: () => {
+            document.removeEventListener("midlight-context-menu", ctxMenuFunc);
             document.removeEventListener("midlight-console-update", updateFunc);
             TWindow.close();
           },
         });
-        let wrapper = new Html(TWindow.window.querySelector(".win-content"));
+        wrapper = new Html(TWindow.window.querySelector(".win-content"));
+        wrapper.attr({ ctxid: "console-text-" + Root.Token });
         wrapper.styleJs({ wordWrap: "break-word" });
         wrapper.clear();
         let arr = Root.Lib.grabConsole();
         for (const textParts of arr) {
           new Html("pre")
+            .attr({ ctxid: "console-text-" + Root.Token })
             .text(
               typeof textParts[0] === "object"
                 ? JSON.stringify(textParts[0], null, 2)
@@ -98,6 +118,7 @@ export default {
         updateFunc = (e) => {
           let textParts = e.detail;
           new Html("pre")
+            .attr({ ctxid: "console-text-" + Root.Token })
             .text(
               typeof textParts[0] === "object"
                 ? JSON.stringify(textParts[0], null, 2)
@@ -112,6 +133,7 @@ export default {
             .appendTo(wrapper);
           wrapper.elm.scrollTop = wrapper.elm.scrollHeight;
         };
+        document.addEventListener("midlight-context-menu", ctxMenuFunc);
         document.addEventListener("midlight-console-update", updateFunc);
       });
     new Root.Lib.html("button")
