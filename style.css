@@ -212,13 +212,13 @@ a {
   cursor: default;
 }
 
-.window-frame .window-contents .window-header {
+.window-frame .win-content .window-header {
   height: 0.5in;
   font-weight: 500;
   font-size: 20px;
 }
 
-.window-frame .window-contents {
+.window-frame .win-content {
   height: calc(100% - 0.4in);
   overflow: auto;
 }

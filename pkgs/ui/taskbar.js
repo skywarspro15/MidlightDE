@@ -64,8 +64,51 @@ export default {
       time.innerText = formatTime(new Date());
       date.innerText = formatDate(new Date());
     }, 1000);
+
+    function addToTaskbar(src, alt, onClick, id) {
+      let taskbar = Html.qs(".apps");
+      let tooltip;
+      let hoverMove;
+      let element = new Html("img")
+        .classOn("tb-icon")
+        .attr({ src: src, alt: alt, draggable: false, id: id })
+        .styleJs({ userSelect: "none" })
+        .appendTo(taskbar)
+        .on("click", onClick)
+        .on("mouseover", (e) => {
+          tooltip = new Html("div")
+            .classOn("taskbar-tooltip")
+            .text(alt)
+            .appendTo("body")
+            .styleJs({ left: e.clientX - 20 + "px", zIndex: 1000 });
+          document.addEventListener("mousemove", (e) => {
+            tooltip.styleJs({ left: e.clientX - 20 + "px", zIndex: 1000 });
+          });
+        })
+        .on("mouseout", () => {
+          if (tooltip) {
+            tooltip.cleanup();
+          }
+          if (hoverMove) {
+            document.removeEventListener("mousemove", hoverInt);
+          }
+        });
+      return element;
+    }
+
+    function removeFromTaskbar(id) {
+      let element = Html.qs(`#${id}`);
+      element.cleanup();
+    }
+
     return Root.Lib.setupReturns((m) => {
       console.log("Taskbar received message: " + m);
+      if (m.type == "addToTaskbar") {
+        addToTaskbar(m.src, m.alt, m.callback, m.iconId);
+      }
+      if (m.type == "removeFromTaskbar") {
+        removeFromTaskbar(m.iconId);
+      }
     });
   },
 };
