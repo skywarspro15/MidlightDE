@@ -205,10 +205,10 @@ a {
   right: 0;
   position: absolute;
   display: flex;
-
   justify-content: flex-end;
   height: 0.7in;
   margin-left: auto;
+  padding: 3.5px;
 }
 
 .window-frame .window-controls .controls {
